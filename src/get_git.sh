@@ -5,6 +5,7 @@
 # Title       : getgit
 # Author      : Kapitanov Alexander
 # E-mail      : sallador@bk.ru
+# Date        : 2019/05/20
 #
 # Description : 
 #   Extract my remote repositories from github. 
@@ -21,6 +22,7 @@
 #     (Deprecated) GIT_DIR     - "gitrepo" // common git directory
 #     FPGA_DIR    - "fpga"    // directory for FPGA projects
 #     URL_DIR     - "https://github.com/capitanov/" remote URL
+#     REPOS       - array of @username repositories
 #
 #   Fuctions:
 #     check_dir_exist() - Checks if working directory exist.
@@ -30,12 +32,11 @@
 #     git_clone_from_remote() - Clone remote repos to local dir
 #       Args: $1 - URL name, e.g., https://github.com/capitanov/
 #
+#     git_main() - Execute main procedure w/ global variables
 #
 # ################################################################ #
 #
-# TODO(capitanov): Fix errors and complete bash script
-# TODO(capitanov): Function declaration
-# TODO(capitanov): Global variables
+# TODO(capitanov): 
 #
 # ################################################################ #
 # Global variables
@@ -44,11 +45,11 @@
 FPGA_DIR="fpga"
 URL_DIR="https://github.com/capitanov/"
 
-declare -a REPOS=("intfftk" "fp23fftk" ) #"intfft_spdf" "math" "fp32_logic" \
-  # "blackman_harris_win" "adc_configurator" "MinesweeperFPGA" "fp23_logic" \
-  # "tcl_for_fpga" "fpga_heart" "Chaotic_Attractors" "Stupid_watch" \
-  # "HLx_Examples"
-  #)
+declare -a REPOS=("intfftk" "fp23fftk" "intfft_spdf" "math" "fp32_logic" \
+  "blackman_harris_win" "adc_configurator" "MinesweeperFPGA" "fp23_logic" \
+  "tcl_for_fpga" "fpga_heart" "Chaotic_Attractors" "Stupid_watch" \
+  "HLx_Examples"
+  )
 
 DEC_LINE="# ####################################################\
 ############ #"
@@ -81,19 +82,21 @@ git_clone_from_remote () {
   done
 }
 
+git_main() {
+  echo ${DEC_LINE}
+  echo "Stage 0: Set global variables and create working directory"
+  
+  check_dir_exist ${FPGA_DIR}
+  
+  echo ${DEC_LINE}
+  echo "Stage 1: Clone directories from github"
+  
+  cd ${FPGA_DIR}; pwd
+  git_clone_from_remote ${URL_DIR}
+  cd ..; pwd
+
+  echo ${DEC_LINE} 
+}
+
+git_main
 # ################################################################ #
-
-echo ${DEC_LINE}
-echo "Stage 0: Set global variables and create working directory"
-
-check_dir_exist ${FPGA_DIR}
-
-echo ${DEC_LINE}
-echo "Stage 1: Clone directories from github"
-
-cd ${FPGA_DIR}; pwd
-git_clone_from_remote ${URL_DIR}
-cd ..; pwd
-# echo -e "\nClone operations are completed!"
-
-echo ${DEC_LINE}
