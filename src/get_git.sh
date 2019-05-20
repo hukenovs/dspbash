@@ -9,64 +9,40 @@
 # Description : 
 #   Extract my remote repositories from github. 
 #
+#   Create/open your working \gitrepo\ directory on local machine,
+#   move to working directory and execute this bash script.
+#
 #   List of git commands:
 #   1. git clone <url> - copy from remote repo to local
 #   2. git remote add <short_name> <url> - set short_name for repo
 #
 #   Globals:
-#       WORK_DIR    - "work"    // my base directory
-#       GIT_DIR     - "gitrepo" // common git directory
-#       FPGA_DIR    - "fpga"    // directory for FPGA projects
-#       URL_DIR     - "https://github.com/capitanov/" - remote URL
+#     (Deprecated) WORK_DIR    - "work"    // my base directory
+#     (Deprecated) GIT_DIR     - "gitrepo" // common git directory
+#     FPGA_DIR    - "fpga"    // directory for FPGA projects
+#     URL_DIR     - "https://github.com/capitanov/" remote URL
+#
+#   Fuctions:
+#     check_dir_exist() - Checks if working directory exist.
+#       Remove if exist and create new directory for git repos
+#       Args: $1 - directory name
+#
+#     git_clone_from_remote() - Clone remote repos to local dir
+#       Args: $1 - URL name, e.g., https://github.com/capitanov/
+#
 #
 # ################################################################ #
 #
 # TODO(capitanov): Fix errors and complete bash script
+# TODO(capitanov): Function declaration
+# TODO(capitanov): Global variables
 #
 # ################################################################ #
-
-# ################################################################ #
-check_dir_exist() {
-  if [ -d ${GIT_DIR} ] ; then
-    echo -e "Pass: Directory /${FPGA_DIR} exists.\nForce delete."
-    rm -rf ${GIT_DIR}
-  else
-    echo -e "Fail: Directory /${FPGA_DIR} does not exists."
-  fi
-  mkdir -p ${GIT_DIR}/${FPGA_DIR}
-}
-
-git_clone_from_remote () {
-  cd ${GIT_DIR}/${FPGA_DIR}
-  pwd
-  for i in "${REPOS[@]}" ; do
-    echo -e "\nClone remote directory: ${URL_DIR}/${i}"
-    git clone ${URL_DIR}/${i}
-    wait
-    cd $i
-    git remote add ${i} ${URL_DIR}/${i}
-    wait
-    git remote -v
-    cd ..
-    echo -e "Pass: Directory ${i} is checked out"
-
-  done
-  cd ../..
-}
+# Global variables
 # ################################################################ #
 
-echo "# ################################################################ #"
-echo "Stage 0: Set global variables and create working directory"
-
-WORK_DIR="work"
-GIT_DIR="gitrepo"
 FPGA_DIR="fpga"
 URL_DIR="https://github.com/capitanov/"
-
-check_dir_exist
-
-echo "# ################################################################ #"
-echo "Stage 1: Clone directories from github"
 
 declare -a REPOS=("intfftk" "fp23fftk" ) #"intfft_spdf" "math" "fp32_logic" \
   # "blackman_harris_win" "adc_configurator" "MinesweeperFPGA" "fp23_logic" \
@@ -74,7 +50,50 @@ declare -a REPOS=("intfftk" "fp23fftk" ) #"intfft_spdf" "math" "fp32_logic" \
   # "HLx_Examples"
   #)
 
-git_clone_from_remote
+DEC_LINE="# ####################################################\
+############ #"
 
-echo -e "\nClone operations are completed!"
-echo "# ################################################################ #"
+# ################################################################ #
+# Function declaration
+# ################################################################ #
+
+check_dir_exist() {
+  if [ -d ${1} ] ; then
+    echo "Pass: Directory /${FPGA_DIR} exists. Force delete."
+    rm -rf ${1}
+  else
+    echo "Fail: Directory /${FPGA_DIR} does not exists."
+  fi
+  mkdir -p ${1}
+}
+
+git_clone_from_remote () {
+  for i in "${REPOS[@]}" ; do
+    echo -e "\nClone remote directory: ${1}/${i}"
+    git clone ${1}/${i}
+    wait
+    cd $i
+    git remote add ${i} ${1}/${i}
+    wait
+    git remote -v
+    cd ..
+    echo -e "Pass: Directory ${i} is checked out"
+  done
+}
+
+# ################################################################ #
+
+echo ${DEC_LINE}
+echo "Stage 0: Set global variables and create working directory"
+
+check_dir_exist ${FPGA_DIR}
+
+echo ${DEC_LINE}
+echo "Stage 1: Clone directories from github"
+
+cd ${FPGA_DIR}; pwd
+git_clone_from_remote ${URL_DIR}
+cd ..; pwd
+# echo -e "\nClone operations are completed!"
+
+echo ${DEC_LINE}
