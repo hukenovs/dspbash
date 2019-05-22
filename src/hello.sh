@@ -18,7 +18,7 @@
 #         bash hello.sh
 #         ./hello.sh
 #
-#   If you see "Permission denied" when running .sh scripts:
+#   If you see "Permission denied" when running *.sh scripts:
 #     >> sudo chmod +x <script_name>
 #
 # ########################################################################## #
@@ -29,10 +29,15 @@
 #   Section 0x3: Floating-point math output
 #   Section 0x4: While loop + if-then-else
 #   Section 0x5: For loop + if-then-else
-#   Section 0x6: Read from terminal
+#   Section 0x6: Read from terminal with agruments
 #   Section 0x7: Case statement ( + read operation )
-#   Section 0x8: Read from terminal with name of value
-#   Section 0x9: Functions
+#   Section 0x8: Read from terminal with named agruments
+#   Section 0x9: Functions and local variables
+#   Section 0xA: Date and time
+#   Section 0xB: Check if file or directory exists
+#   Section 0xC: Regular expressions. Match patterns
+#   Section 0xD: Write data to file
+#   Section 0xE: Read data from file
 #
 #   Help in terminal: 
 #     >> man bash
@@ -41,6 +46,7 @@
 #   your code.
 #
 # ########################################################################## #
+echo -e "####################################################"
 echo -n "######## Bash script examples for begginers ########"
 echo -e "\n#### Example 0: Hello World\n" 
 
@@ -171,17 +177,25 @@ for arg in "$@"; do
   esac
 done
 if [[ ($a && $b) ]]; then
-  echo -e "Sum of ${a} and ${b} are $(( ${a}+${b} ))"
+  echo -e "\nPass: Sum of ${a} and ${b} are $(( ${a}+${b} ))"
 else
-  echo -e "One or more parameters are NULL. Cannot calculate sum"
+  echo -e "\nFail: One or more parameters are NULL. Cannot calculate sum"
 fi
 
 # ############################################################################ #
 echo -e "\n#### Example 9: Functions. Use 'echo' for return value\n"
 
-echo -e "Function 'math_of_two()'. Three arguments: two values and operator"
-echo -e "Can operate with: +, -, *, /, % and **. Examples:\n"
+echo -e "By default variables are global. Use local keyword to change its type."
+echo -e "A local variable is visible only within the block of code in which it \
+appears.\n"
+echo -e "Function 'math_of_two()' has two arguments and one math operator."
+echo -e "It can operate with: +, -, *, /, % and **. Examples:\n"
 
+# math_of_two() - integer math operation of two variables,
+#   Args:
+#     $1 - 1st integer variable
+#     $2 - 2nd integer variable
+#     $3 - math operator: +, -, *, /, % or **
 function math_of_two() {
   local ad1=$1;
   local ad2=$2;
@@ -206,5 +220,100 @@ ops=$(math_of_two ${a1} ${a2} "*")  && echo ">>   ${a1} *  ${a2}  =  ${ops}"
 ops=$(math_of_two ${a1} ${a2} "/")  && echo ">>   ${a1} /  ${a2}  =  ${ops}"
 ops=$(math_of_two ${a1} ${a2} "%")  && echo ">>   ${a1} %  ${a2}  =  ${ops}"
 ops=$(math_of_two ${a1} ${a2} "**") && echo ">>   ${a1} ** ${a2}  =  ${ops}"
+ops=$(math_of_two ${a1} ${a2} "xx") && echo ">>   ${a1} ?? ${a2}  =  ${ops}"
 
-echo -e "\n####################################################"
+
+# ############################################################################ #
+echo -e "\n#### Example 10: Date and time\n"
+
+echo -e "Press 'date --help' to see help about date and time commands.\n"
+
+Second=`date +%S`
+Minute=`date +%M`
+Hour=`date +%H`
+
+Day=`date +%d`
+Month=`date +%m`
+Year=`date +%Y`
+Date=`date`
+
+echo "Current Date is: ${Year}/${Month}/${Day}"
+echo "Current Time is: ${Hour}:${Minute}:${Second}"
+
+# ############################################################################ #
+echo -e "\n#### Example 11: Check if file or directory exists\n"
+
+function check_file() {
+  local fname=$1;
+  if [[ -f ${fname} ]]; then
+    rm -rf ${fname}
+    echo "File '${fname}' exists. Force delete and create new."
+  else
+    echo "File '${fname}' doesn't exists. Create file ${fname}."
+  fi
+  touch ${fname}
+}
+
+function check_dir() {
+  local dname=$1;
+  if [[ -d ${dname} ]]; then
+    rm -rf ${dname}
+    echo "Directory /${dname} exists. Force delete and create new."
+  else
+    echo "Directory /${dname} doesn't exists. Create /${dname}."
+  fi
+  mkdir -v ${dname}
+}
+
+file_name="test.txt"
+dir_name="test"
+check_file ${file_name}
+check_dir  ${dir_name}
+
+rm -rf ${file_name} ${dir_name}
+
+# ############################################################################ #
+echo -e "\n#### Example 12: Regular expressions. Regex bash\n"
+
+echo "Common regex commands:\n"
+echo "?    - zero or one occurrences of the preceding element,"
+echo "*    - zero or more occurrences of the preceding element,"
+echo "+    - one or more occurrences of the preceding element,"
+echo "^    - starting position within the string,"
+echo "[ ]  - single character that is contained within the brackets,"
+echo "[^ ] - single character that is not contained within the brackets,"
+echo "( )  - marked subexpression,"
+echo "$    - ending position of the string,"
+echo "\d   - any digit [0-9]"
+echo "\D   - not a digit [^0-9]"
+echo "\n   - new line symbol"
+echo "\t   - tab symbol"
+echo "\s   - space symbol"
+echo "\v   - vertical tab symbol"
+echo -e ".    - wildchart: matches any character,\n"
+
+exstr="This is example string has some numbers 1 2 3 4 5 6 11 12 13,\n\
+tabs: \t, new line:\nand some words: {cat} \t{hat} \t{rat} \t{bat} \t{123}"
+
+echo -e "Example string:\n" && echo -e "${exstr}" && echo ""
+
+echo "Find strings .at pattern, RegEx = ( .at ) : " 
+echo ${exstr} | grep -o -P "(.at)" && echo ""
+
+echo "Find two-digit numbers, RegEx = ( \d\d ) : " 
+echo ${exstr} | grep -o -P "(\d\d)" && echo ""
+
+echo -e "The next regex pattern means 'find all strings or characters inside \
+{} \nwith only digits into the string.\n"
+echo -n "Inside brackets, RegEx = ( \{([^\{\}\D]+)\} ) : "
+echo ${exstr} | grep -o -P "(\{([^\{\}\D]+)\})"
+
+# ############################################################################ #
+echo -e "\n#### Example 13: Write to file\n"
+
+
+
+# ############################################################################ #
+echo -e "\n################ End of bash script ################"
+echo -e "####################################################"
+# ############################################################################ #
