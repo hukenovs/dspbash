@@ -10,33 +10,42 @@
 #   Bash script examples for begginers. 
 #
 #   How to use:
-#     1. Download this script
-#     2. Open terminal (Press Ctrl+Alt+T)
+#     0. Download script or create empty file without extension or w/ *.sh
+#     1. Start all of your bash scripts w/ command: #!/bin/bash
+#     2. Open terminal (e.g., press Ctrl+Alt+T)
 #     3. Move to working directory by using 'cd' command
-#     4. Execute this bash script, e.g., ./hello.sh or bash hello.sh
+#     4. Execute bash script with the next command: 
+#         bash hello.sh
+#         ./hello.sh
 #
-#
-# Important! Start all of your bash scripts w/ command: #!/bin/bash
-#
-# Help in terminal: man bash
-#
-# ########################################################################## #
-# Section: Input/output 
-#   echo   - display a line of string on standard output or a file
-#   printf - prints a formatted string to the standard output
-#   read   - read line/data from the standard input
+#   If you see "Permission denied" when running .sh scripts:
+#     >> sudo chmod +x <script_name>
 #
 # ########################################################################## #
-
+# 
+#   Section 0x0: Hello World
+#   Section 0x1: Display command 'echo' with attributes
+#   Section 0x2: Math operations ( + , - , / , * , % , ** )
+#   Section 0x3: Floating-point math output
+#   Section 0x4: While loop + if-then-else
+#   Section 0x5: For loop + if-then-else
+#   Section 0x6: Read from terminal
+#   Section 0x7: Case statement ( + read operation )
+#   Section 0x8: Read from terminal with name of value
+#   Section 0x9: Functions
+#
+#   Help in terminal: 
+#     >> man bash
+#
 # ########################################################################## #
 echo -n "######## Bash script examples for begginers ########"
-echo -e "\n#### Example 1: Hello World\n" 
+echo -e "\n#### Example 0: Hello World\n" 
 
 sthello="Hello World!"
 echo "$sthello"
 
 # ########################################################################## #
-echo -e "\n#### Example 2: echo with -e & -n attributes\n"
+echo -e "\n#### Example 1: echo with -e & -n attributes\n"
 
 echo "Hello\nWorld (without attributes)"
 echo -n "Hello "
@@ -44,7 +53,7 @@ echo "Wolrd (with -n: printing text without new line)"
 echo -e "Hello\nWorld (with -e: printing with new line between words)"
 
 # ########################################################################## #
-echo -e "\n#### Example 3: math operations: ((expression))\n"
+echo -e "\n#### Example 2: math operations: ((expression))\n"
 
 Anum=7; Bnum=4;
 add=$(( Anum +  Bnum ))
@@ -64,7 +73,7 @@ echo "Exp  = ${Anum} ** ${Bnum} = ${exp}"
 echo "Another way is to use \`expr\` word with backtick, e.g. \`expr A + B\`"
 
 # ########################################################################## #
-echo -e "\n#### Example 4: Floating-point operations\n"
+echo -e "\n#### Example 3: Floating-point operations\n"
 
 echo -e "For float/double calculation you can add '| bc' after your expression"
 echo -e "Command '| bc -l' after expr gets maximum digits after decimal point"
@@ -84,7 +93,7 @@ acc=3; echo "Accuracy = ${acc}, Divide: ${Anum} / ${Bnum} = $(div_float $Anum $B
 echo -n "Accuracy = ${acc}, (use scale)   = "; echo "scale=$acc; $Anum / $Bnum" | bc
 
 # ############################################################################ #
-echo -e "\n#### Example 5: While loop & for loop (with if-then-else)\n"
+echo -e "\n#### Example 4: While loop (with if-then-else)\n"
 
 echo -e "Compare operations:"
 echo -e "-lt - less than \n-gt - greater than \n-eq - equal to \n-ne - not equal to"
@@ -100,6 +109,9 @@ while [ true ]; do
   fi
 done
 
+# ############################################################################ #
+echo -e "\n#### Example 5: For loop (with if-then-else)\n"
+
 echo -n "(For loop)   Counter from 0 to N-1: "
 cnt=0; N=10
 for (( i = 0; i <= $N; i++ )); do
@@ -111,7 +123,7 @@ for (( i = 0; i <= $N; i++ )); do
 done
 
 # ############################################################################ #
-echo -e "\n#### Example 7: Read operations, while loop & if-then-else\n"
+echo -e "\n#### Example 6: Read operations, while loop & if-then-else\n"
 
 # while [ true ]; do
 #   echo -n "Enter your login (e.g., user):  " && read username
@@ -125,7 +137,7 @@ echo -e "\n#### Example 7: Read operations, while loop & if-then-else\n"
 echo -e "Skip this section because of 'read' operator. Uncomment if needed."
 
 # ############################################################################ #
-echo -e "\n#### Example 8: Case statement\n"
+echo -e "\n#### Example 7: Case statement\n"
 
 # echo -n "Enter a value between 1 and 3:  " && read cnum
 # case ${cnum} in
@@ -137,7 +149,7 @@ echo -e "\n#### Example 8: Case statement\n"
 echo -e "Skip this section because of 'read' operator. Uncomment if needed."
 
 # ############################################################################ #
-echo -e "\n#### Example 9: Get arguments from command line\n"
+echo -e "\n#### Example 8: Get arguments from command line\n"
 
 echo -e "Just put arguments after script name and get them into the script"
 # echo "Your 1ns argument = $1"
@@ -160,6 +172,5 @@ if [[ ($a && $b) ]]; then
 else
   echo -e "One or more parameters are NULL. Cannot calculate sum"
 fi
-
 
 echo -e "\n####################################################"
