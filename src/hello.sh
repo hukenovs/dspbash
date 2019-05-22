@@ -37,6 +37,9 @@
 #   Help in terminal: 
 #     >> man bash
 #
+#   Use "Shell Style Guide" by Google for best reading and performance of 
+#   your code.
+#
 # ########################################################################## #
 echo -n "######## Bash script examples for begginers ########"
 echo -e "\n#### Example 0: Hello World\n" 
@@ -53,7 +56,7 @@ echo "Wolrd (with -n: printing text without new line)"
 echo -e "Hello\nWorld (with -e: printing with new line between words)"
 
 # ########################################################################## #
-echo -e "\n#### Example 2: math operations: ((expression))\n"
+echo -e "\n#### Example 2: Integer math operations: ((expression))\n"
 
 Anum=7; Bnum=4;
 add=$(( Anum +  Bnum ))
@@ -73,10 +76,10 @@ echo "Exp  = ${Anum} ** ${Bnum} = ${exp}"
 echo "Another way is to use \`expr\` word with backtick, e.g. \`expr A + B\`"
 
 # ########################################################################## #
-echo -e "\n#### Example 3: Floating-point operations\n"
+echo -e "\n#### Example 3: Floating-point math operations\n"
 
-echo -e "For float/double calculation you can add '| bc' after your expression"
-echo -e "Command '| bc -l' after expr gets maximum digits after decimal point"
+echo -e "For float/double calculation you can add '| bc' after your expression."
+echo -e "Command '| bc -l' after expr gets maximum digits after decimal point."
 echo -e "Also you can use scale=num before expression, e.g. 'scale=4; 7/3 | bc'\n"
 
 # div_float() - floating-point divider with accuracy parameter,
@@ -151,13 +154,13 @@ echo -e "Skip this section because of 'read' operator. Uncomment if needed."
 # ############################################################################ #
 echo -e "\n#### Example 8: Get arguments from command line\n"
 
-echo -e "Just put arguments after script name and get them into the script"
+echo -e "Just put arguments after script name and get them into the script."
 # echo "Your 1ns argument = $1"
 # echo "Your 2nd argument = $2"
 # echo "Number of arguments = $#"
 
-echo -e "You can put name with its value for external variables e.g., write "
-echo -e "a=value b=value after script in terminal"
+echo -e "You can put name with its value for external variables e.g.,"
+echo -e "write 'a=value b=value' after script in terminal"
 for arg in "$@"; do
   idx=$(echo $arg | cut -f1 -d=)
   val=$(echo $arg | cut -f2 -d=)
@@ -172,5 +175,36 @@ if [[ ($a && $b) ]]; then
 else
   echo -e "One or more parameters are NULL. Cannot calculate sum"
 fi
+
+# ############################################################################ #
+echo -e "\n#### Example 9: Functions. Use 'echo' for return value\n"
+
+echo -e "Function 'math_of_two()'. Three arguments: two values and operator"
+echo -e "Can operate with: +, -, *, /, % and **. Examples:\n"
+
+function math_of_two() {
+  local ad1=$1;
+  local ad2=$2;
+  local opm=$3;
+  local res=0;
+  case ${opm} in
+    "+")  res=$(( ad1 +  ad2 )) ;;
+    "-")  res=$(( ad1 -  ad2 )) ;;
+    "*")  res=$(( ad1 *  ad2 )) ;;
+    "/")  res=$(( ad1 /  ad2 )) ;;
+    "%")  res=$(( ad1 %  ad2 )) ;;
+    "**") res=$(( ad1 ** ad2 )) ;;
+    *) res="Error, cannot calculate data";
+  esac
+  echo ${res}
+}
+
+a1=5; a2=2;
+ops=$(math_of_two ${a1} ${a2} "+")  && echo ">>   ${a1} +  ${a2}  =  ${ops}"
+ops=$(math_of_two ${a1} ${a2} "-")  && echo ">>   ${a1} -  ${a2}  =  ${ops}"
+ops=$(math_of_two ${a1} ${a2} "*")  && echo ">>   ${a1} *  ${a2}  =  ${ops}"
+ops=$(math_of_two ${a1} ${a2} "/")  && echo ">>   ${a1} /  ${a2}  =  ${ops}"
+ops=$(math_of_two ${a1} ${a2} "%")  && echo ">>   ${a1} %  ${a2}  =  ${ops}"
+ops=$(math_of_two ${a1} ${a2} "**") && echo ">>   ${a1} ** ${a2}  =  ${ops}"
 
 echo -e "\n####################################################"
