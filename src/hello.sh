@@ -36,8 +36,9 @@
 #   Section 0xA: Date and time
 #   Section 0xB: Check if file or directory exists
 #   Section 0xC: Regular expressions. Match patterns
-#   Section 0xD: Write data to file
-#   Section 0xE: Read data from file
+#   Section 0xD: Sleep command
+#   Section 0xE: Write data to file
+#   Section 0xF: Read data from file
 #
 #   Help in terminal: 
 #     >> man bash
@@ -318,22 +319,46 @@ echo ${exstr} | grep -o -P "(.at)" && echo ""
 echo "Find two-digit numbers, RegEx = ( \d\d ) : " 
 echo ${exstr} | grep -o -P "(\d\d)" && echo ""
 
+
 echo -e "The next regex pattern means 'find all strings or characters inside \
-{} \nwith only digits into the string.\n"
+{} \nwith only digits into the string'.\n"
+
 echo -n "Inside brackets, RegEx = ( \{([^\{\}\D]+)\} ) : "
 echo ${exstr} | grep -o -P "(\{([^\{\}\D]+)\})"
 
 # ############################################################################ #
-echo -e "\n#### Example 13: Write to file\n"
+echo -e "\n#### Example 13: Sleep command\n"
+
+N=2
+echo "Waiting for t = ${N} seconds..."
+sleep ${N}
+echo "Done!"
+
+# ############################################################################ #
+echo -e "\n#### Example 14: Write to file (e.g., array from 0 to N-1)\n"
 
 file_name="testfile.txt"
 check_file ${file_name}
 
-N=16
+N=13
 for (( i = 0; i < $N; i++ )); do
-  echo -n "${i} "
-  echo "${i}" >> ${file_name}
+  if [ ${i} -eq 0 ]; then
+    echo -n "Calc y = 2^(x):   "
+  fi
+
+  res=$(( 1 << ${i} ))
+  echo -n "${res} " && echo "${res}" >> ${file_name}
 done
+
+# ############################################################################ #
+echo -e "\n\n#### Example 15: Read from file (IFS - Input Field Separator)\n"
+
+cnt=0
+# while read line; do
+while IFS= read -r line; do
+  # echo "Content of ${cnt} line: ${line}" && ((cnt++))
+  printf "Content of %02d line: 0x%04X\n" ${cnt} ${line} && ((cnt++))
+done < ${file_name}
 
 # ############################################################################ #
 echo -e "\n################ End of bash script ################"
