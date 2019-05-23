@@ -51,7 +51,7 @@ echo -n "######## Bash script examples for begginers ########"
 echo -e "\n#### Example 0: Hello World\n" 
 
 sthello="Hello World!"
-echo "$sthello"
+echo "${sthello}"
 
 # ########################################################################## #
 echo -e "\n#### Example 1: echo with -e & -n attributes\n"
@@ -84,9 +84,11 @@ echo "Another way is to use \`expr\` word with backtick, e.g. \`expr A + B\`"
 # ########################################################################## #
 echo -e "\n#### Example 3: Floating-point math operations\n"
 
-echo -e "For float/double calculation you can add '| bc' after your expression."
+echo -e "For floating-point (float / double) calculation you can add '| bc' \
+after your expression."
 echo -e "Command '| bc -l' after expr gets maximum digits after decimal point."
-echo -e "Also you can use scale=num before expression, e.g. 'scale=4; 7/3 | bc'\n"
+echo -e "Also you can use SCALE (scale=num) before main expression, e.g. \
+'scale=4; 7/3 | bc'\n"
 
 # div_float() - floating-point divider with accuracy parameter,
 #   Args:
@@ -97,21 +99,24 @@ function div_float () {
     echo "scale = $3; $1 / $2" | bc
 }
 
-acc=6; echo "Accuracy = ${acc}, Divide: ${Anum} / ${Bnum} = $(div_float $Anum $Bnum $acc)"
-acc=3; echo "Accuracy = ${acc}, Divide: ${Anum} / ${Bnum} = $(div_float $Anum $Bnum $acc)"
-echo -n "Accuracy = ${acc}, (use scale)   = "; echo "scale=$acc; $Anum / $Bnum" | bc
+acc=6; echo "Accuracy = ${acc}, Divide: ${Anum} / ${Bnum} = \
+$(div_float $Anum $Bnum ${acc})"
+acc=3; echo "Accuracy = ${acc}, Divide: ${Anum} / ${Bnum} = \
+$(div_float $Anum $Bnum ${acc})"
+echo -n "Accuracy = ${acc}, (use scale)   = "
+echo "scale=${acc}; ${Anum} / ${Bnum}" | bc
 
 # ############################################################################ #
 echo -e "\n#### Example 4: While loop (with if-then-else)\n"
 
 echo -e "Compare operations:"
-echo -e "-lt - less than \n-gt - greater than \n-eq - equal to \n-ne - not equal to"
-echo -e "-le - less than or equal to \n-ge - greater than or equal to \n"
+echo -e "-lt - less than\n-gt - greater than\n-eq - equal to\n-ne - not equal to"
+echo -e "-le - less than or equal to\n-ge - greater than or equal to\n"
 
 echo -n "(While loop) Counter from 0 to N-1: "
 cnt=0; N=10
 while [ true ]; do
-  if [ $cnt -eq $N ]; then
+  if [ ${cnt} -eq ${N} ]; then
     echo "" && break
   else
     echo -n "${cnt} " && ((cnt++))
@@ -121,10 +126,18 @@ done
 # ############################################################################ #
 echo -e "\n#### Example 5: For loop (with if-then-else)\n"
 
+echo -e "There are three different condition syntaxes:"
+echo -e "Single brackets: [ condition ] - Cannot compare values w/ =, >, < etc."
+echo -e "Double brackets: [[ condition ]] - Improved version of [ cond. ]"
+echo -e "Double-parenthesis: (( condition)) - Useful for math operations\n"
+
 echo -n "(For loop)   Counter from 0 to N-1: "
 cnt=0; N=10
-for (( i = 0; i <= $N; i++ )); do
-  if [ $cnt -eq $N ]; then
+for (( i = 0; i <= ${N}; i++ )); do
+  if [ ${cnt} -eq ${N} ]; then
+  # if [[ ${cnt} -eq ${N} ]]; then
+  # if [[ ${cnt} == ${N} ]]; then
+  # if (( ${cnt} == ${N} )); then
     echo ""
   else
     echo -n "${cnt} " && ((cnt++))
@@ -168,15 +181,16 @@ echo -e "Just put arguments after script name and get them into the script."
 echo -e "You can put name with its value for external variables e.g.,"
 echo -e "write 'a=value b=value' after script in terminal"
 for arg in "$@"; do
-  idx=$(echo $arg | cut -f1 -d=)
-  val=$(echo $arg | cut -f2 -d=)
+  idx=$(echo ${arg} | cut -f1 -d=)
+  val=$(echo ${arg} | cut -f2 -d=)
   case ${idx} in
-    a) a=$val ;;
-    b) b=$val ;;
+    a) a=${val} ;;
+    b) b=${val} ;;
     *) 
   esac
 done
-if [[ ($a && $b) ]]; then
+
+if [[ (${a} && ${b}) ]]; then
   echo -e "\nPass: Sum of ${a} and ${b} are $(( ${a}+${b} ))"
 else
   echo -e "\nFail: One or more parameters are NULL. Cannot calculate sum"
@@ -245,7 +259,7 @@ echo -e "\n#### Example 11: Check if file or directory exists\n"
 
 function check_file() {
   local fname=$1;
-  if [[ -f ${fname} ]]; then
+  if [ -f ${fname} ]; then
     rm -rf ${fname}
     echo "File '${fname}' exists. Force delete and create new."
   else
@@ -256,7 +270,7 @@ function check_file() {
 
 function check_dir() {
   local dname=$1;
-  if [[ -d ${dname} ]]; then
+  if [ -d ${dname} ]; then
     rm -rf ${dname}
     echo "Directory /${dname} exists. Force delete and create new."
   else
@@ -270,7 +284,7 @@ dir_name="test"
 check_file ${file_name}
 check_dir  ${dir_name}
 
-rm -rf ${file_name} ${dir_name}
+rm -rf ${dir_name} ${file_name} 
 
 # ############################################################################ #
 echo -e "\n#### Example 12: Regular expressions. Regex bash\n"
@@ -286,11 +300,12 @@ echo "( )  - marked subexpression,"
 echo "$    - ending position of the string,"
 echo "\d   - any digit [0-9]"
 echo "\D   - not a digit [^0-9]"
-echo "\n   - new line symbol"
-echo "\t   - tab symbol"
-echo "\s   - space symbol"
-echo "\v   - vertical tab symbol"
-echo -e ".    - wildchart: matches any character,\n"
+echo "\n   - new line symbol,"
+echo "\t   - tab symbol,"
+echo "\s   - space symbol,"
+echo "\v   - vertical tab symbol,"
+echo ".    - wildchart: matches any character,"
+echo -e "and so on...\n"
 
 exstr="This is example string has some numbers 1 2 3 4 5 6 11 12 13,\n\
 tabs: \t, new line:\nand some words: {cat} \t{hat} \t{rat} \t{bat} \t{123}"
@@ -311,7 +326,14 @@ echo ${exstr} | grep -o -P "(\{([^\{\}\D]+)\})"
 # ############################################################################ #
 echo -e "\n#### Example 13: Write to file\n"
 
+file_name="testfile.txt"
+check_file ${file_name}
 
+N=16
+for (( i = 0; i < $N; i++ )); do
+  echo -n "${i} "
+  echo "${i}" >> ${file_name}
+done
 
 # ############################################################################ #
 echo -e "\n################ End of bash script ################"
