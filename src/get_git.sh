@@ -71,7 +71,7 @@ check_dir_exist() {
 git_clone_from_remote () {
   for i in "${REPOS[@]}" ; do
     echo -e "\nClone remote directory: ${1}/${i}"
-    git clone ${1}/${i}
+    git clone ${1}${i}
     wait
     cd $i
     git remote add ${i} ${1}/${i}
@@ -86,6 +86,7 @@ git_main() {
   echo ${DEC_LINE}
   echo "Stage 0: Set global variables and create working directory"
   
+  cd ../.. # if you run this script from dspbash/src directory
   check_dir_exist ${FPGA_DIR}
   
   echo ${DEC_LINE}
